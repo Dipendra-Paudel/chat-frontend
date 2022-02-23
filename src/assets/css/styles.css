@@ -1,0 +1,20 @@
+.message-container::-webkit-scrollbar-track {
+  @apply bg-blue-50;
+}
+
+.auth-container {
+  min-width: 300px;
+}
+.connected-users {
+  height: calc(100% - 56px);
+  overflow: auto;
+}
+svg.send-message-icon {
+  font-size: 25px;
+}
+
+@media only screen and (min-width: 768px) {
+  .auth-container {
+    min-width: 380px;
+  }
+}
