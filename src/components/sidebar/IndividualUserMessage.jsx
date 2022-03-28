@@ -6,37 +6,46 @@ const IndividualUserMessage = ({ user }) => {
   const dispatch = useDispatch();
   const { selectedUser } = useSelector((state) => state.users);
   const { username, lastMessage } = user;
-  const { message, time } = lastMessage;
 
-  const date = new Date(time);
-  const messageDay = date.getDate();
-  const messageMonth = date.getMonth() + 1;
-  const messageYear = date.getFullYear();
+  const getTime = () => {
+    const time = lastMessage?.time;
 
-  const currentDate = new Date();
-  const currentDay = currentDate.getDate();
-  const currentMonth = currentDate.getMonth() + 1;
-  const currentYear = currentDate.getFullYear();
-
-  let showingDateTime = "";
-
-  if (messageYear === currentYear) {
-    if (messageMonth === currentMonth && messageDay === currentDay) {
-      let hours = date.getHours();
-      let minutes = date.getMinutes();
-
-      String(hours).length === 1 && (hours = `0${hours}`);
-      String(minutes).length === 1 && (minutes = `0${minutes}`);
-
-      showingDateTime = `${hours}:${minutes}`;
-    } else {
-      showingDateTime = `${date.toLocaleString("default", {
-        month: "short",
-      })} ${messageDay}`;
+    if (!time) {
+      return "";
     }
-  } else {
-    showingDateTime = `${messageYear}/${messageMonth}/${messageDay}`;
-  }
+
+    const date = new Date(time);
+    const messageDay = date.getDate();
+    const messageMonth = date.getMonth() + 1;
+    const messageYear = date.getFullYear();
+
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentYear = currentDate.getFullYear();
+
+    let showingDateTime = "";
+
+    if (messageYear === currentYear) {
+      if (messageMonth === currentMonth && messageDay === currentDay) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+
+        String(hours).length === 1 && (hours = `0${hours}`);
+        String(minutes).length === 1 && (minutes = `0${minutes}`);
+
+        showingDateTime = `${hours}:${minutes}`;
+      } else {
+        showingDateTime = `${date.toLocaleString("default", {
+          month: "short",
+        })} ${messageDay}`;
+      }
+    } else {
+      showingDateTime = `${messageYear}/${messageMonth}/${messageDay}`;
+    }
+
+    return showingDateTime;
+  };
 
   const setActiveUser = () => {
     dispatch({
@@ -67,7 +76,7 @@ const IndividualUserMessage = ({ user }) => {
           </div>
           <div className="overflow-hidden">
             <div
-              className={`font-semibold ${
+              className={`font-semibold truncate pr-8 ${
                 _id === user._id ? "text-white" : ""
               }`}
             >
@@ -75,10 +84,10 @@ const IndividualUserMessage = ({ user }) => {
             </div>
             <div
               className={`text-sm truncate ${
-                _id === user._id ? "text-gray-100" : "text-gray-600"
+                _id === user._id ? "text-gray-100" : "text-gray-500"
               }`}
             >
-              {message}
+              {lastMessage?.message}
             </div>
           </div>
         </div>
@@ -87,7 +96,7 @@ const IndividualUserMessage = ({ user }) => {
             _id === user._id ? "text-gray-100" : "text-gray-600"
           }`}
         >
-          {showingDateTime}
+          {getTime()}
         </div>
       </div>
     </div>

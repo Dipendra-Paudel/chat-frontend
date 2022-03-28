@@ -59,12 +59,14 @@ export const register = async (data) => {
     .post("/api/user/register", data)
     .then((res) => {
       const result = res.data;
-      const { status, errors, message } = result;
-      if (!status) {
+      const { status, errors, message, user, token } = result;
+      if (status !== "success") {
         errors && (clientResult.errors = errors);
         message && (clientResult.error = message);
       } else {
-        clientResult.message = message;
+        clientResult.status = "success";
+        clientResult.user = user;
+        localStorage.setItem("token", token);
       }
     })
     .catch((error) => {

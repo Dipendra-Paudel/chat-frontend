@@ -28,12 +28,15 @@ const Messages = ({ handleScroll }) => {
   }
 
   useEffect(() => {
-    if (!page || page === 1) {
-      dispatch({ type: TOGGLE_FETCHING_MESSAGE });
-    }
+    dispatch({
+      type: TOGGLE_FETCHING_MESSAGE,
+      payload: {
+        fetchingMessage: page === 1 ? true : false,
+      },
+    });
 
     // eslint-disable-next-line
-  }, [dispatch, page]);
+  }, [page]);
 
   const limit = 10;
 
@@ -45,7 +48,12 @@ const Messages = ({ handleScroll }) => {
         limit
       );
 
-      dispatch({ type: TOGGLE_FETCHING_MESSAGE });
+      dispatch({
+        type: TOGGLE_FETCHING_MESSAGE,
+        payload: {
+          fetchingMessage: false,
+        },
+      });
 
       if (status === "success") {
         dispatch({

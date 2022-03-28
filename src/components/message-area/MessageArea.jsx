@@ -18,7 +18,7 @@ const MessageArea = ({ scrollMessages }) => {
         behavior === "smooth" && (options.behavior = "smooth");
         element.scrollTo(options);
       }
-    }, 10);
+    }, 5);
   };
 
   scrollMessages(handleScroll);

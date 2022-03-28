@@ -2,10 +2,12 @@ import {
   ADD_SEARCH_USERS_LIST,
   REMOVE_SEARCH_USERS_LIST,
   UPDATE_SEARCHING_USERS,
+  UPDATE_SEARCHING_VALUE,
 } from "../actions/actionTypes";
 
 const initialState = {
   users: [],
+  searchingValue: "",
   usersSearched: false,
   searchingUsers: false,
 };
@@ -16,11 +18,11 @@ const searchReducer = (state = initialState, action) => {
   switch (type) {
     case ADD_SEARCH_USERS_LIST: {
       const { users: oldUsers } = state;
-      const { users } = payload;
+      const { users, replace } = payload;
 
       return {
         ...state,
-        users: [...oldUsers, users],
+        users: replace ? users : [...oldUsers, users],
         usersSearched: true,
         searchingUsers: false,
       };
@@ -36,11 +38,23 @@ const searchReducer = (state = initialState, action) => {
     }
 
     case UPDATE_SEARCHING_USERS: {
-      const { searchingUsers } = payload;
+      const { searchingUsers, usersSearched } = payload;
+      const options = {};
+      searchingUsers !== undefined && (options.searchingUsers = searchingUsers);
+      usersSearched !== undefined && (options.usersSearched = usersSearched);
 
       return {
         ...state,
-        searchingUsers,
+        ...options,
+      };
+    }
+
+    case UPDATE_SEARCHING_VALUE: {
+      const { value } = payload;
+
+      return {
+        ...state,
+        searchingValue: value,
       };
     }
 

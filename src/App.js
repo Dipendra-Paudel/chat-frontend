@@ -29,7 +29,7 @@ const App = () => {
 
     socket.on("receiveMessage", (data) => {
       if (data) {
-        const { _id, message, sender, time, username } = data;
+        const { _id, message, sender, time } = data;
 
         // add message to redux
         dispatch.current({
@@ -47,8 +47,8 @@ const App = () => {
           type: UPDATE_CONNECTED_USERS,
           payload: {
             newMessage: {
-              _id: sender,
-              username: username,
+              _id: sender?._id,
+              username: sender?.username,
               lastMessage: {
                 message,
                 time,
@@ -80,7 +80,7 @@ const App = () => {
           type: UPDATE_CONNECTED_USERS,
           payload: {
             newMessage: {
-              _id: sender,
+              _id: sender?._id,
               receiver,
               lastMessage: {
                 message,

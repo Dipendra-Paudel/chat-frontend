@@ -7,12 +7,12 @@ const IndividualMessage = ({ msg }) => {
       className={`whitespace-pre-line flex ${received ? "" : "justify-end"}`}
     >
       <div
-        className={`px-3 py-1 rounded-2xl ${
+        className={`px-3 py-1 rounded-2xl break-words ${
           received ? "bg-gray-200" : "bg-primary text-white"
         }`}
         style={{ maxWidth: "60%" }}
       >
-        {message}
+        {message.trim()}
       </div>
     </div>
   );

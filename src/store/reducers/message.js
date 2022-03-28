@@ -15,9 +15,10 @@ export const messageReducer = (state = initialState, action) => {
 
   switch (type) {
     case TOGGLE_FETCHING_MESSAGE: {
+      const { fetchingMessage } = payload;
       return {
         ...state,
-        fetchingMessage: !state.fetchingMessage,
+        fetchingMessage,
       };
     }
 
@@ -25,11 +26,13 @@ export const messageReducer = (state = initialState, action) => {
       const allMessages = [...state.allMessages];
 
       const { message: currentMessage } = payload;
+
       let isUserFound = false;
 
       for (let i = 0; i < allMessages.length; i++) {
         let msg = allMessages[i];
-        if (msg.user === currentMessage.user) {
+        const msgU = currentMessage.user?._id || currentMessage.user;
+        if (msg.user === msgU) {
           msg.messages = [...currentMessage.messages, ...msg.messages];
           msg.page = currentMessage.page || msg.page || 1;
           allMessages[i] = msg;
@@ -37,6 +40,8 @@ export const messageReducer = (state = initialState, action) => {
           i = allMessages.length;
         }
       }
+
+      console.log(currentMessage);
 
       if (!isUserFound) {
         allMessages.push(currentMessage);
@@ -55,7 +60,7 @@ export const messageReducer = (state = initialState, action) => {
 
       for (let i = 0; i < allMessages.length; i++) {
         let msg = allMessages[i];
-        if (msg.user === receiver) {
+        if (msg.user === receiver?._id) {
           const updateIndex = msg.messages.findIndex(
             (m) => m.uniqueToken === uniqueToken
           );

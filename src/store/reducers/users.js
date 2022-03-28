@@ -23,13 +23,14 @@ const usersReducer = (state = initialState, action) => {
     }
 
     case UPDATE_CONNECTED_USERS: {
-      const { _id, lastMessage, username, receiver } = payload.newMessage;
+      const { lastMessage, username, _id, receiver } = payload.newMessage;
+
       const { connectedUsers } = state;
 
       let isUserAlreadyConnected = false;
       let index = "";
 
-      const userId = receiver || _id;
+      const userId = receiver?._id || _id;
 
       for (let i = 0; i < connectedUsers.length; i++) {
         if (connectedUsers[i]._id === userId) {
@@ -41,7 +42,11 @@ const usersReducer = (state = initialState, action) => {
       }
 
       if (!isUserAlreadyConnected) {
-        connectedUsers.unshift({ userId, lastMessage, username });
+        connectedUsers.unshift({
+          userId,
+          lastMessage,
+          username: username || receiver?.username,
+        });
       } else {
         const oldUserMessage = connectedUsers[index];
         connectedUsers.splice(index, 1);
