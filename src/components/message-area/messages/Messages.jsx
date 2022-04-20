@@ -14,39 +14,37 @@ const Messages = ({ handleScroll }) => {
     },
     message: { fetchingMessage, allMessages },
   } = useSelector((state) => state);
-
   const dispatch = useDispatch();
+
   let messages = [];
-  let page = 1;
+  let isMessagesFetched = false;
+  let lastMesssageTime = "";
 
   for (let i = 0; i < allMessages.length; i++) {
     if (allMessages[i].user === userId) {
       messages = [...allMessages[i].messages];
-      page = allMessages[i].page;
+      lastMesssageTime = messages[messages.length - 1]?.time;
+      isMessagesFetched = allMessages[i].isMessagesFetched;
       i = allMessages.length;
     }
   }
 
   useEffect(() => {
-    dispatch({
-      type: TOGGLE_FETCHING_MESSAGE,
-      payload: {
-        fetchingMessage: page === 1 ? true : false,
-      },
-    });
+    if (isMessagesFetched !== undefined && isMessagesFetched !== true) {
+      dispatch({
+        type: TOGGLE_FETCHING_MESSAGE,
+        payload: {
+          fetchingMessage: !isMessagesFetched,
+        },
+      });
+    }
 
     // eslint-disable-next-line
-  }, [page]);
-
-  const limit = 10;
+  }, [userId]);
 
   useEffect(() => {
     const asyncFetchMessages = async () => {
-      const { status, messages, nextPage } = await getMessages(
-        userId,
-        page,
-        limit
-      );
+      const { status, messages } = await getMessages(userId, lastMesssageTime);
 
       dispatch({
         type: TOGGLE_FETCHING_MESSAGE,
@@ -62,8 +60,8 @@ const Messages = ({ handleScroll }) => {
             message: {
               user: userId,
               messages: messages,
-              page: nextPage ? page + 1 : null,
             },
+            old: true,
           },
         });
 
@@ -72,9 +70,11 @@ const Messages = ({ handleScroll }) => {
     };
 
     fetchingMessage && asyncFetchMessages();
-  }, [fetchingMessage, page, userId, dispatch, handleScroll]);
 
-  if (fetchingMessage && page === 1) {
+    // eslint-disable-next-line
+  }, [fetchingMessage, userId, dispatch, handleScroll]);
+
+  if (fetchingMessage && messages.length === 0) {
     return <div>Loading...</div>;
   }
 

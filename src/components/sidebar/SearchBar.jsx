@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -6,7 +6,6 @@ import { searchUsers } from "../../api/users";
 import {
   ADD_SEARCH_USERS_LIST,
   REMOVE_SEARCH_USERS_LIST,
-  UPDATE_SEARCHING_USERS,
   UPDATE_SEARCHING_VALUE,
 } from "../../store/actions/actionTypes";
 
@@ -21,9 +20,9 @@ const SearchBar = () => {
   const dispatch = useDispatch();
 
   const handleSearchUsers = async (value) => {
-    const { status, users } = await searchUsers(value, page);
+    const { status, users, user } = await searchUsers(value, page);
 
-    if (status === "success") {
+    if (status === "success" && searchInput.current.value === user) {
       dispatch({
         type: ADD_SEARCH_USERS_LIST,
         payload: {

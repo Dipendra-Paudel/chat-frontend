@@ -43,7 +43,7 @@ const usersReducer = (state = initialState, action) => {
 
       if (!isUserAlreadyConnected) {
         connectedUsers.unshift({
-          userId,
+          _id: userId,
           lastMessage,
           username: username || receiver?.username,
         });

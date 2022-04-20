@@ -38,6 +38,7 @@ const App = () => {
             message: {
               user: sender,
               messages: [{ _id, message, received: true, time }],
+              messageType: "socket",
             },
           },
         });

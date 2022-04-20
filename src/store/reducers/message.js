@@ -25,25 +25,36 @@ export const messageReducer = (state = initialState, action) => {
     case ADD_MESSAGE: {
       const allMessages = [...state.allMessages];
 
-      const { message: currentMessage } = payload;
+      const { message: currentMessage, old } = payload;
+      const { messageType } = currentMessage;
 
       let isUserFound = false;
+      let addUserMessage = true;
 
       for (let i = 0; i < allMessages.length; i++) {
         let msg = allMessages[i];
         const msgU = currentMessage.user?._id || currentMessage.user;
         if (msg.user === msgU) {
-          msg.messages = [...currentMessage.messages, ...msg.messages];
-          msg.page = currentMessage.page || msg.page || 1;
-          allMessages[i] = msg;
-          isUserFound = true;
-          i = allMessages.length;
+          if (
+            (messageType === "socket" && msg?.messages?.length > 0) ||
+            messageType !== "socket"
+          ) {
+            msg.messages = old
+              ? [...msg.messages, ...currentMessage.messages]
+              : [...currentMessage.messages, ...msg.messages];
+
+            msg.isMessagesFetched = true;
+            allMessages[i] = msg;
+            isUserFound = true;
+            i = allMessages.length;
+          } else {
+            addUserMessage = false;
+            i = allMessages.length;
+          }
         }
       }
 
-      console.log(currentMessage);
-
-      if (!isUserFound) {
+      if (!isUserFound && addUserMessage) {
         allMessages.push(currentMessage);
       }
 

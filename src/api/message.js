@@ -1,22 +1,16 @@
 import axios from "axios";
 
-export const getMessages = async (
-  user,
-  page = 1,
-  limit = 10,
-  lastMessageId
-) => {
+export const getMessages = async (user, lastMessageTime) => {
   const response = {};
 
   await axios
-    .post("/api/chat", { user, page, limit, lastMessageId })
+    .post("/api/chat", { user, lastMessageTime })
     .then((res) => {
       const { status, data, error } = res.data;
 
       if (status === "success") {
         response.messages = data.messages;
         response.status = "success";
-        response.nextPage = data.nextPage;
       } else {
         response.error = error;
       }
@@ -29,7 +23,7 @@ export const getMessages = async (
           response.error = data;
         } else {
           response.error =
-            data?.message || "Somwthing went wrong. Please try again later";
+            data?.message || "Something went wrong. Please try again later";
         }
       }
     });

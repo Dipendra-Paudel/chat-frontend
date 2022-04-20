@@ -5,7 +5,7 @@ import { CHANGE_SELECTED_USER } from "../../store/actions/actionTypes";
 const IndividualUserMessage = ({ user }) => {
   const dispatch = useDispatch();
   const { selectedUser } = useSelector((state) => state.users);
-  const { username, lastMessage } = user;
+  const { _id: userId, username, lastMessage } = user;
 
   const getTime = () => {
     const time = lastMessage?.time;
@@ -47,16 +47,18 @@ const IndividualUserMessage = ({ user }) => {
     return showingDateTime;
   };
 
-  const setActiveUser = () => {
-    dispatch({
-      type: CHANGE_SELECTED_USER,
-      payload: {
-        user,
-      },
-    });
-  };
-
   const { _id } = selectedUser;
+
+  const setActiveUser = () => {
+    if (_id !== userId) {
+      dispatch({
+        type: CHANGE_SELECTED_USER,
+        payload: {
+          user,
+        },
+      });
+    }
+  };
 
   return (
     <div

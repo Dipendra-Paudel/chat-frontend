@@ -43,7 +43,7 @@ export const login = async (data) => {
           clientResult.error = data;
         } else {
           clientResult.error =
-            data?.message || "Somwthing went wrong. Please try again later";
+            data?.message || "Something went wrong. Please try again later";
         }
       }
     });
@@ -77,7 +77,7 @@ export const register = async (data) => {
           clientResult.message = data;
         } else {
           clientResult.message =
-            data?.message || "Somwthing went wrong. Please try again later";
+            data?.message || "Something went wrong. Please try again later";
         }
       }
     });

@@ -1,27 +1,50 @@
-import React, { useRef } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import MessageAreaTitle from "./title/MessageAreaTitle";
 import Messages from "./messages/Messages";
 import SendMessage from "./send-message/SendMessage";
 import UserInfo from "./user-info/UserInfo";
+import { TOGGLE_FETCHING_MESSAGE } from "../../store/actions/actionTypes";
 
 const MessageArea = ({ scrollMessages }) => {
   const { selectedUser } = useSelector((state) => state.users);
+  const [scrollBottom, setScrollBottom] = useState(0);
   const container = useRef();
   const sendMessageRef = useRef();
+  const dispatch = useDispatch();
 
-  const handleScroll = (behavior = "smooth") => {
+  const handleScroll = (delay = 0) => {
     setTimeout(() => {
       const element = container.current;
       if (element) {
-        const options = { top: element.scrollHeight };
-        behavior === "smooth" && (options.behavior = "smooth");
+        const options = { top: element.scrollHeight - scrollBottom };
         element.scrollTo(options);
       }
-    }, 5);
+    }, delay);
+  };
+
+  const handleScrollToTop = () => {
+    const element = container.current;
+    if (element.scrollTop === 0) {
+      setScrollBottom(element.scrollHeight);
+      dispatch({
+        type: TOGGLE_FETCHING_MESSAGE,
+        payload: {
+          fetchingMessage: true,
+        },
+      });
+    }
   };
 
   scrollMessages(handleScroll);
+
+  const selectedUserId = selectedUser?._id;
+
+  useEffect(() => {
+    setScrollBottom(0);
+
+    // eslint-disable-next-line
+  }, [selectedUserId]);
 
   if (Object.keys(selectedUser).length === 0) {
     return (
@@ -42,11 +65,15 @@ const MessageArea = ({ scrollMessages }) => {
             style={{
               height: `calc(100vh - ${56 + sendMessageRef.clientHeight}px)`,
             }}
+            onScroll={handleScrollToTop}
           >
             <Messages handleScroll={handleScroll} />
           </div>
           <div ref={sendMessageRef} className="p-4">
-            <SendMessage handleScroll={handleScroll} />
+            <SendMessage
+              handleScroll={handleScroll}
+              setScrollBottom={setScrollBottom}
+            />
           </div>
         </div>
 
