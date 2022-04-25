@@ -4,7 +4,7 @@ const imageValidator = async (file) => {
   image.src = URL.createObjectURL(file);
 
   return (image.onload = () => {
-    const validImageExtensions = ["png", "jpg", "jpeg", "webp"];
+    const validImageExtensions = ["png", "jpg", "jpeg", "webp", "gif"];
     const nameArray = file.name.split(".");
     const imageExtension = nameArray[nameArray.length - 1];
     let count = 0;

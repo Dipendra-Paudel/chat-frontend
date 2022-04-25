@@ -30,7 +30,8 @@ const SendMessage = ({ handleScroll, setScrollBottom }) => {
 
   const handleSendMessage = (value, image) => {
     const msg = value.trim();
-    if (value.length > 0) {
+
+    if (msg.length > 0) {
       const uniqueToken = randomToken();
 
       dispatch({
